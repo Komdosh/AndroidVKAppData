@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 25
@@ -26,11 +27,24 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile 'com.android.support:appcompat-v7:25.2.0'
+    compile 'com.android.support:design:25.2.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.1'
     testCompile 'junit:junit:4.12'
 
     compile 'com.squareup.retrofit2:retrofit:2.2.0'
+    compile "org.jetbrains.anko:anko-common:0.8.2"
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+}
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-android-extensions:1.1.0"
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
 }
 repositories {
     mavenCentral()
