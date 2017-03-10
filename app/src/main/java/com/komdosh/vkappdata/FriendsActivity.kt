@@ -6,19 +6,14 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.komdosh.vkappdata.adapter.FriendsAdapter
-import com.komdosh.vkappdata.model.User
+import com.komdosh.vkappdata.model.Response
+import org.jetbrains.anko.async
+import org.jetbrains.anko.find
 import org.jetbrains.anko.startActivityForResult
-import org.json.JSONObject
-
+import org.jetbrains.anko.uiThread
 
 class FriendsActivity : AppCompatActivity() {
-
-    val listOfUsers = ArrayList<User>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,27 +24,18 @@ class FriendsActivity : AppCompatActivity() {
 
 
     fun makeRequest(token: String, uid: String){
-        val queue = Volley.newRequestQueue(this)
-        val url = "https://api.vk.com/method/friends.get?user_id=$uid&fields=first_name,last_name&access_token=$token"
+        val req = Request(uid, token)
 
-        val stringRequest = StringRequest(Request.Method.GET, url,
-                Response.Listener<String> { response -> showFriendsList(response) },
-                Response.ErrorListener { })
-
-        queue.add(stringRequest)
+        async {
+            val result = req.execute()
+            uiThread { showFriendsList(result) }
+        }
     }
 
-    fun showFriendsList(string: String){
-        val jsonArray = JSONObject(string).getJSONArray("response")
-
-        (0..jsonArray.length()-1)
-                .map { JSONObject(jsonArray[it].toString()) }
-                .mapTo(listOfUsers) { User(it.getString("first_name"), it.getString("last_name"), it.getInt("online"), it.getInt("uid")) }
-
-        val friendsList = findViewById(R.id.friendsList) as RecyclerView
+    fun showFriendsList(res: Response){
+        val friendsList : RecyclerView = find(R.id.friendsList)
         friendsList.layoutManager = LinearLayoutManager(this)
-        friendsList.adapter = FriendsAdapter(listOfUsers)
-        friendsList.adapter.notifyDataSetChanged()
+        friendsList.adapter = FriendsAdapter(res.response)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
