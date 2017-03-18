@@ -24,9 +24,7 @@ class AuthActivity : AppCompatActivity() {
         webAuth.settings.javaScriptEnabled = true
         webAuth.isVerticalScrollBarEnabled = false
         webAuth.isHorizontalScrollBarEnabled = false
-        webAuth.clearCache(true)
-        webAuth.setWebViewClient(VkWebViewClient())
-
+        webAuth.clearCache(false)
         webAuth.setWebViewClient(VkWebViewClient())
 
         val url = "https://oauth.vk.com/authorize?client_id=" + Settings.API_VK_ID + "&display=page&redirect_uri=" + URLEncoder.encode(Settings.REDIRECTED_URL, "UTF-8") + "&scope=friends&response_type=token&v=5.62"
@@ -46,14 +44,13 @@ class AuthActivity : AppCompatActivity() {
             if (url.startsWith("http://oauth.vk.com/authorize") || url.startsWith("http://oauth.vk.com/oauth/authorize")
                     || url.startsWith("https://oauth.vk.com/authorize") || url.startsWith("https://oauth.vk.com/oauth/authorize")) {
                 progress.visibility = View.GONE
-                finish()
             }
         }
     }
 
     fun parseUrl(url: String) {
         try {
-            if( url.startsWith(Settings.REDIRECTED_URL) ) {
+            if(url.startsWith(Settings.REDIRECTED_URL)) {
                 if( !url.contains("error") ) {
                     val vkUtil = VKUtil()
                     val auth = vkUtil.parseRedirectUrl(url)

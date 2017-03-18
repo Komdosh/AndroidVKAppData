@@ -34,12 +34,15 @@ class FriendsActivity : AppCompatActivity() {
 
     fun showFriendsList(res: Response){
         val friendsList : RecyclerView = find(R.id.friendsList)
-        friendsList.layoutManager = LinearLayoutManager(this)
+        friendsList.layoutManager = LinearLayoutManager(this) as RecyclerView.LayoutManager?
         friendsList.adapter = FriendsAdapter(res.response)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        if(data==null){
+            return
+        }
         when (requestCode) {
             1 -> if (resultCode == Activity.RESULT_OK) {
                 makeRequest(data.getStringExtra("token"), data.getStringExtra("uid"))
