@@ -24,7 +24,7 @@ class AuthActivity : AppCompatActivity() {
         webAuth.settings.javaScriptEnabled = true
         webAuth.isVerticalScrollBarEnabled = false
         webAuth.isHorizontalScrollBarEnabled = false
-        webAuth.clearCache(false)
+        webAuth.clearCache(true)
         webAuth.setWebViewClient(VkWebViewClient())
 
         val url = "https://oauth.vk.com/authorize?client_id=" + Settings.API_VK_ID + "&display=page&redirect_uri=" + URLEncoder.encode(Settings.REDIRECTED_URL, "UTF-8") + "&scope=friends&response_type=token&v=5.62"
